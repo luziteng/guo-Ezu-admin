@@ -1665,8 +1665,8 @@ export default {
           const {data} = res.data
           this.tableData = res.data.data.data;
           console.log('dfas',this.tableData);
-          // this.page =currentPage;
-          // this.total = count;
+          this.page = res.data.data.currentPage;
+          this.total = res.data.data.count;
         
 })
       // this.axios

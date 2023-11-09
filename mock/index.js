@@ -10,6 +10,8 @@ const mocks = [
 ]
 
 Mock.mock('/api/order', 'get', require('./data/order.json'))
+Mock.mock('/api/goods', 'get', require('./data/goods.json'))
+Mock.mock('/api/shopcart', 'get', require('./data/shopcart.json'))
 // for front mock
 // please use it cautiously, it will redefine XMLHttpRequest,
 // which will cause many of your third-party libraries to be invalidated(like progress event).

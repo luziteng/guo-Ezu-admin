@@ -407,16 +407,25 @@
                 })
             },
             getOnSaleList() {
-                this.axios.get('goods/onsale', {
-                    params: {
-                        page: this.page,
-						size: this.size
-                    }
-                }).then((response) => {
-                    this.tableData = response.data.data.data
-                    this.page = response.data.data.currentPage
-                    this.total = response.data.data.count
-                })
+                // this.axios.get('goods/onsale', {
+                //     params: {
+                //         page: this.page,
+				// 		size: this.size
+                //     }
+                // }).then((response) => {
+                //     this.tableData = response.data.data.data
+                //     this.page = response.data.data.currentPage
+                //     this.total = response.data.data.count
+                // })
+                this.axios.get('/api/goods')
+.then((res)=>{
+  console.log(res.data.data.data)
+          this.tableData = res.data.data.data;
+          console.log('dfas',this.tableData);
+          this.page =res.data.data.currentPage;
+          this.total = res.data.data.count;
+        
+})
             },
             getOutList() {
                 this.axios.get('goods/out', {
