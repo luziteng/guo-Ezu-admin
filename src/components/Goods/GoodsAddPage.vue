@@ -252,12 +252,12 @@
               >
             </div>
           </el-form-item>
-          <el-form-item label="属性设置" class="checkbox-wrap">
+          <!-- <el-form-item label="属性设置" class="checkbox-wrap">
             <el-checkbox-group v-model="infoForm.is_new" class="checkbox-list">
               <el-checkbox label="新品" name="is_new"></el-checkbox>
             </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="选择快递模板">
+          </el-form-item> -->
+          <!-- <el-form-item label="选择快递模板">
             <el-select
               v-model="kdValue"
               placeholder="请选择快递"
@@ -271,7 +271,7 @@
               >
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="排序" prop="sort_order">
             <el-input-number
               :mini="1"
