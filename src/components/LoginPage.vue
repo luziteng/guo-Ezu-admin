@@ -35,6 +35,7 @@
 </template>
 <script>
 import api from "@/config/api";
+import _http from'@/api/user'
 export default {
   data() {
     return {
@@ -66,27 +67,20 @@ export default {
           return false;
         }
         this.loading = true;
-        let root = this.root;
-        this.axios
-          .post(root + "auth/login", {
-            username: this.form.username,
-            password: this.form.password,
-          })
-          .then((res) => {
-            let call = res.data;
-            console.log(call);
+        let datas = {
+          adminKey: this.form.username,
+          adminPassword: this.form.password,
+        }
+        _http.login(datas).then((res) => {
             this.loading = false;
             // 无token直接跳转
-            this.$router.push({ name: "welcome" });
-            if (res.data.errno === 0) {
-              console.log(res.data.data);
-              localStorage.setItem("token", res.data.data.token);
+            if (res.code === 200) {
+              console.log('tokenValue',res.data.tokenValue)
+              localStorage.setItem("token",res.data.tokenValue);
               localStorage.setItem(
                 "userInfo",
-                JSON.stringify(res.data.data.userInfo)
+                JSON.stringify(res.data.adminKey)
               );
-              console.log(JSON.stringify(res.data.data.token));
-              console.log(JSON.stringify(res.data.data.userInfo));
               this.$router.push({ name: "welcome" });
               let sUserAgent = navigator.userAgent;
               // todo 手机端
@@ -113,7 +107,7 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: call.errmsg,
+                message: res.msg,
               });
               return false;
             }
@@ -121,6 +115,7 @@ export default {
           .catch((err) => {
             this.loading = false;
           });
+       
       });
     },
   },

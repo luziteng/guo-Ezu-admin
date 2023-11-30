@@ -1,4 +1,4 @@
-const rootUrl = 'https://www.guzong1.com:446/admin/';
+const rootUrl = 'http://8.134.172.68:8000/';
 // const rootUrl = 'http://127.0.0.1:8360/admin/';
 
 const api = {

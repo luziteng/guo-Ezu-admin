@@ -22,22 +22,22 @@
                 <el-table v-if="pIndex == 0" :data="categoryData" style="width: 100%" border stripe>
                     <el-table-column prop="name" label="分类名称">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.level==1" class="bg-gray">{{scope.row.name}}</div>
-                            <div v-if="scope.row.level==2" class="bg-left">{{scope.row.name}}</div>
+                            <div class="bg-gray">{{scope.row.categoryName}}</div>
+                            <!-- <div>{{scope.categoryName}}</div> -->
                             <!-- {{ scope.row.level == 2 ? '　' : '' }} {{scope.row.name}} -->
                         </template>
                     </el-table-column>
                     <el-table-column label="图标显示" width="80">
                         <template slot-scope="scope">
                             <el-switch
-                                    v-model="scope.row.is_channel"
+                                    v-model="scope.row.categoryPicture"
                                     active-text=""
                                     inactive-text=""
                                     @change='changeChannelStatus($event,scope.row.id)'>
                             </el-switch>
                         </template>
                     </el-table-column>
-                    <el-table-column label="首页显示" width="80">
+                    <!-- <el-table-column label="首页显示" width="80">
                         <template slot-scope="scope">
                             <el-switch
                                     v-model="scope.row.is_show"
@@ -56,11 +56,11 @@
                                     @change='changeCategoryStatus($event,scope.row.id)'>
                             </el-switch>
                         </template>
-                    </el-table-column>
+                    </el-table-column> -->
 
                     <el-table-column prop="sort_order" label="排序" width="100" sortable>
                         <template slot-scope="scope">
-                            <el-input v-model="scope.row.sort_order" placeholder="排序" @blur="submitSort(scope.$index, scope.row)"></el-input>
+                            <el-input v-model="scope.row.categorySort" placeholder="排序" @blur="submitSort(scope.$index, scope.row)"></el-input>
                         </template>
                     </el-table-column>
 
@@ -92,6 +92,7 @@
     </div>
 </template>
 <script>
+import http from '@/api/goods'
     export default {
         data() {
             return {
@@ -210,12 +211,13 @@
                 });
             },
             getList() {
-                this.axios.get('category', {
-                    params: {
-                        page: this.page,
-                    }
-                }).then((response) => {
-                    this.categoryData = response.data.data
+                let params = {
+                    parentId:undefined,
+                    categoryType:undefined
+                }
+                http.categoryList(params).then(res=>{
+                    console.log('分类列表',res,)
+                    this.categoryData = res.data
                 })
             },
             getSpecList() {

@@ -1,10 +1,11 @@
 import axios from 'axios'
 import store from '@/store'
-// import notification from 'ant-design-vue/es/notification'
+import { Message } from 'element-ui';
 import { VueAxios } from './axios'
 import cookies from '@/common/cookies'
 import router from '@/router'
 let timer = null
+const that = this
 export default function generateRequest(config){
   let base_url = process.env.VUE_APP_API_BASE_URL
 
@@ -19,29 +20,32 @@ export default function generateRequest(config){
   const _config = Object.assign({}, defaultConfig, config)
   const _axios = axios.create({
      baseURL: _config.baseURL,
-     timeout: _config.timeout
+     timeout: _config.timeout,
+     headers:{
+      guoezu:'b696bcc4-26d8-4c27-a138-83bcf0ec79e9'
+     }
    })
   _axios.interceptors.request.use(config => {
-    const token = cookies.getCookies("token")
-    
+    const token = localStorage.getItem("token")
     // 如果 token 存在
     // 让每个请求携带自定义 token 请根据实际情况自行修改
     if (token && _config.isNeedToken) {
-      //config.headers['Access-Token'] = token
+      // config.headers['Access-Token'] = token
       // config.headers['token'] = token
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['guoezu'] = token
     }
     return config
   }, errorHandler)
 
   _axios.interceptors.response.use((response) => {
-    if(response.data.code === 1001) {
-    //   notification.error({
-    //     message: '注意',
-    //     description: response.data.msg
-    //   })
-      store.dispatch('Logout')
-      return Promise.reject(response.data.msg)
+    console.log('response',response)
+    if(response.data.code === 401) {
+      Message({
+        type: "error",
+        message: '登录失效，请重新登录',
+      });
+        localStorage.clear();
+        that.$router.push({ name: "login" });
     } else {
       return response.data
     }

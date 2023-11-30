@@ -69,14 +69,14 @@
               图片尺寸：顶级分类为690*自定义, 只能上传jpg/png文件
             </div>
           </el-form-item>
-          <el-form-item
+          <!-- <el-form-item
             label="分类图片高度"
             prop="name"
             v-if="infoForm.parent_id == 0"
           >
             <el-input v-model="infoForm.p_height"></el-input>
-          </el-form-item>
-          <el-form-item
+          </el-form-item> -->
+          <!-- <el-form-item
             label="图标"
             prop="icon_url"
             v-if="infoForm.parent_id == 0"
@@ -105,7 +105,7 @@
             <div class="form-tip">
               图片尺寸：图标250*250, 只能上传jpg/png文件
             </div>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="排序">
             <el-input-number
               v-model="infoForm.sort_order"
@@ -141,7 +141,7 @@ export default {
       infoForm: {
         id: 0,
         name: "",
-        parent_id: 0,
+        // parent_id: 0,
         front_name: "",
         img_url: "",
         sort_order: 100,

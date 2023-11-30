@@ -37,7 +37,14 @@ module.exports = {
       errors: true,
     },
     // lintOnSave: false,
-    before: require("./mock/mock-server.js"),
+    // before: require("./mock/mock-server.js"),
+    proxy: {
+      '/api': {
+          target: 'http://8.134.172.68:8000',
+          changeOrigin: true,
+          pathRewrite: {'^/api':''}
+      }
+  }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

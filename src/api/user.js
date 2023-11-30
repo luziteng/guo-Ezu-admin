@@ -1,24 +1,53 @@
-import request from '@/utils/request'
+import requestConfig from '@/utils/request'
+let request = requestConfig()
+export default{
+  login(data) {
+    return request({
+      url: '/api/admin/login',
+      method: 'post',
+      data
+    })
+  },
+  loginout(){
+    return request({
+      url: '/api/admin/logout',
+      method: 'post',
+    })
+  },
+  userList(data){
+    return request({
+      url: '/api/admin/selectList',
+      method: 'post',
+      data
+    })
+  },
+  userUpdate(data){
+    return request({
+      url: '/api/admin/update',
+      method: 'put',
+      data
+    })
+  },
+  deleteUser(data){
+    return request({
+      url: '/api/admin/update',
+      method: 'put',
+      data
+    })
+  },
+  registerUser(data){
+    return request({
+      url: '/api/admin/register',
+      method: 'post',
+      data
+    })
+  },
+  customerList(data){
+    return request({
+      url: '/api/user/selectList',
+      method: 'post',
+      data
+    })
+  }
 
-export function login(data) {
-  return request({
-    url: '/vue-admin-template/user/login',
-    method: 'post',
-    data
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
 }

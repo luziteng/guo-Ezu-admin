@@ -43,22 +43,22 @@ Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   next()
-  return false;
-  // let token = localStorage.getItem('token') || '';
+  // return false;
+  let token = localStorage.getItem('token') || '';
 
-  // //配置接口信息
-  // // Axios.defaults.baseURL = 'http://www.地址.com:8360/admin/';
-  // Axios.defaults.baseURL = api.rootUrl;
-  // Axios.defaults.headers.common['X-Hioshop-Token'] = token;
+  //配置接口信息
+  // Axios.defaults.baseURL = 'http://www.地址.com:8360/admin/';
+  Axios.defaults.baseURL = api.rootUrl;
+  Axios.defaults.headers.common['X-Hioshop-Token'] = token;
 
-  // if (!token && to.name !== 'login') {
-  //   next({
-  //     path: '/login',
-  //     query: { redirect: to.fullPath }
-  //   })
-  // } else {
-  //   next()
-  // }
+  if (!token && to.name !== 'login') {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
 });
 
 new Vue({

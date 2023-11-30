@@ -51,10 +51,10 @@
             <i class="fa fa-large fa-wrench"></i>
             <span>店铺设置</span>
           </template>
-          <el-menu-item index="/dashboard/settings/showset">
+          <!-- <el-menu-item index="/dashboard/settings/showset">
             <i class="fa fa-circle"></i>
             <span>显示设置</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <!-- <el-menu-item index="/dashboard/ad">
             <i class="fa fa-circle"></i>
             <span>广告列表</span>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import http from'@/api/user'
 export default {
   data() {
     return {
@@ -106,23 +107,25 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        localStorage.clear();
+        http.loginout().then(() => {
+          localStorage.clear();
+        })
         this.$router.replace({ name: "login" });
       });
     },
-    checkLogin() {
-      this.axios.get("index/checkLogin").then((response) => {
-        console.log(response.data);
-        if (response.data.errno === 401) {
-          localStorage.clear();
-          this.$router.replace({ name: "login" });
-        }
-      });
-    },
+    // checkLogin() {
+    //   this.axios.get("index/checkLogin").then((response) => {
+    //     console.log(response.data);
+    //     if (response.data.errno === 401) {
+    //       localStorage.clear();
+    //       this.$router.replace({ name: "login" });
+    //     }
+    //   });
+    // },
   },
   mounted() {
     console.log(this.$route.path);
-    this.checkLogin();
+    // this.checkLogin();
     if (!this.loginInfo) {
       this.loginInfo = JSON.parse(
         window.localStorage.getItem("userInfo") || null
