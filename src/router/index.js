@@ -325,7 +325,7 @@ export const constantRoutes = [
   },
   {
     path: "*",
-    redirect: "/dashboard",
+    redirect: "/dashboard/welcome",
   },
 ];
 
