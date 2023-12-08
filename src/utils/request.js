@@ -74,27 +74,12 @@ const errorHandler = (error) => {
     //   })
     // }
     if (error.response.status === 401 && !(data.result && data.result.isLogin)) {
-        // clearTimeout(timer)
-        // timer = null
-        // timer = setTimeout(()=>{
-        //   notification.error({
-        //     message: '登录过期',
-        //     description: '登录已过期，请重新登录。'
-        //   })
-        // },1000)
-      cookies.removeCookies("token")
-      // router.currentRoute.path !== 'login' &&
-      //       router.replace({
-      //         path: 'login',
-      //         query: { redirect: router.currentRoute.path },
-      //       })
-      // if (token) {
-      //   store.dispatch('Logout').then(() => {
-      //     setTimeout(() => {
-      //       window.location.reload()
-      //     }, 1500)
-      //   })
-      // }
+      Message({
+        type: "error",
+        message: '登录失效，请重新登录',
+      });
+        localStorage.clear();
+        that.$router.push({ name: "login" });
     }
   }
   return Promise.reject(error)

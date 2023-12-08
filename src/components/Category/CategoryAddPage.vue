@@ -43,7 +43,6 @@
           <el-form-item
             label="分类图片"
             prop="img_url"
-            v-if="infoForm.parent_id == 0"
           >
             <img
               v-if="infoForm.img_url"
@@ -72,11 +71,10 @@
           <!-- <el-form-item
             label="分类图片高度"
             prop="name"
-            v-if="infoForm.parent_id == 0"
           >
             <el-input v-model="infoForm.p_height"></el-input>
           </el-form-item> -->
-          <!-- <el-form-item
+          <el-form-item
             label="图标"
             prop="icon_url"
             v-if="infoForm.parent_id == 0"
@@ -105,7 +103,7 @@
             <div class="form-tip">
               图片尺寸：图标250*250, 只能上传jpg/png文件
             </div>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="排序">
             <el-input-number
               v-model="infoForm.sort_order"
@@ -124,7 +122,7 @@
 </template>
 
 <script>
-import api from "@/config/api";
+import http from "@/api/goods";
 export default {
   data() {
     return {
@@ -276,12 +274,12 @@ export default {
     },
   },
   mounted() {
-    this.getTopCategory();
-    this.infoForm.id = this.$route.query.id || 0;
-    this.getInfo();
-    this.root = api.rootUrl;
-    this.qiniuZone = api.qiniu;
-    this.getQiniuToken();
+    // this.getTopCategory();
+    // this.infoForm.id = this.$route.query.id || 0;
+    // this.getInfo();
+    // this.root = api.rootUrl;
+    // this.qiniuZone = api.qiniu;
+    // this.getQiniuToken();
   },
 };
 </script>

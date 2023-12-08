@@ -18,10 +18,14 @@
           <el-table-column prop="id" label="ID" width="60"></el-table-column>
           <el-table-column prop="adminKey" label="会员名称"></el-table-column>
           <el-table-column
-            prop="last_login_time"
+            prop="loginTime"
             label="最近登录"
             width="200"
-          ></el-table-column>
+          >
+          <template slot-scope="scope" >
+            <div v-if="scope.row.loginTime">{{ changeTime(scope.row.loginTime) }}</div>
+          </template>
+        </el-table-column>
           <!-- <el-table-column prop="last_login_ip" label="登录IP" width="200"></el-table-column> -->
           <el-table-column label="操作" width="180">
             <template slot-scope="scope">
@@ -67,6 +71,7 @@
 
 <script>
 import http from "@/api/user";
+const dayjs = require('dayjs')
 export default {
   data() {
     return {
@@ -153,6 +158,9 @@ export default {
         }
       });
     },
+    changeTime(date){
+      return   this.$dayjs(date).format("YYYY-MM-DD HH:mm:ss")
+    }
   },
   components: {},
   mounted() {

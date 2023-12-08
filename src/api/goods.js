@@ -8,4 +8,12 @@ categoryList(data) {
       data
     })
   },
+  // 新增分类
+  createcategory(data) {
+    return request({
+      url:'/api/category/insert',
+      method:'post',
+      data
+    })
+  }
 }

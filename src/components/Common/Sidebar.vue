@@ -38,10 +38,10 @@
             <span>盲盒设置</span>
           </el-menu-item>
         </el-submenu>
-        <el-menu-item index="/dashboard/shopcart">
+        <!-- <el-menu-item index="/dashboard/shopcart">
           <i class="fa fa-large fa-shopping-cart"></i>
           <span>购物车</span>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="/dashboard/user">
           <i class="fa fa-large fa-users"></i>
           <span>用户列表</span>

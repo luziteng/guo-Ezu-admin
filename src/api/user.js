@@ -48,6 +48,13 @@ export default{
       method: 'post',
       data
     })
+  },
+  // 获取oss授权
+  getOssToken(){
+    return request({
+      url: '/api/storage/getStsToken',
+      method: 'get',
+    })
   }
 
 }

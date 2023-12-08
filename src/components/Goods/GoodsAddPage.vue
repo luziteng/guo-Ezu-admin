@@ -41,43 +41,14 @@
           <el-form-item
             label="商品图片"
             prop="list_pic_url"
-            v-if="infoForm.list_pic_url"
-            class="image-uploader-diy new-height"
           >
-            <div class="index-image">
-              <el-image
-                :preview-src-list="previewList"
-                v-if="infoForm.list_pic_url"
-                :src="infoForm.list_pic_url"
-                @click="previewIndexImg"
-                class="image-show"
-                fit="cover"
-              ></el-image>
-              <div class="o-shadow" @click="delePicList">
-                <i class="el-icon-delete"></i>
-              </div>
-            </div>
-          </el-form-item>
-          <el-form-item
-            label="商品图片"
-            prop="list_pic_url"
-            v-if="!infoForm.list_pic_url"
-          >
-            <el-upload
-              name="file"
-              ref="upload"
-              class="upload-demo"
-              :action="qiniuZone"
-              :on-success="handleSuccess"
-              :before-upload="indexImgBefore"
-              :auto-upload="true"
-              list-type="picture-card"
-              :data="picData"
-              :http-request="uploadIndexImg"
-            >
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
-            </el-upload>
+            <upload-img
+              v-model="infoForm.fileList"
+              :is-put-oss="true"
+              :max-count="9"
+              :oss-path-prefix="'goods'"
+              @input="uploadSuccess"
+            />
           </el-form-item>
           <el-form-item label="商品轮播图" prop="goods_sn">
             <draggable
@@ -342,12 +313,13 @@
 import api from "@/config/api";
 import lrz from "lrz";
 import moment from "moment";
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.bubble.css';
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
 import draggable from "vuedraggable";
 import $ from "jquery";
 import { quillEditor } from "vue-quill-editor";
+import UploadImg from "../../common/components/UploadImg.vue"
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
   ["blockquote"],
@@ -424,6 +396,7 @@ export default {
         is_on_sale: 0,
         is_new: false,
         // is_index: false,
+        fileList:[]
       },
       infoRules: {
         name: [
@@ -979,10 +952,22 @@ export default {
         // console.error(that.infoForm.goods_desc);
         $("#summernote").summernote("code", that.infoForm.goods_desc);
     },
+     /**
+     * @description:图片/文件上传线上成功返回
+     * @param  {*}
+     * @return {*}
+     * @param {*} data 文件信息及线上链接
+     */
+     uploadSuccess(data) {
+      this.fileList=data
+      console.log('imageData-----', data)
+    }
+
   },
   components: {
     quillEditor,
     draggable,
+    UploadImg
   },
   computed: {
     editor() {
@@ -990,18 +975,18 @@ export default {
     },
   },
   mounted() {
-    this.infoForm.id = this.$route.query.id || 0;
-    this.getInfo();
-    this.getAllCategory();
-    this.getExpressData();
-    this.getQiniuToken();
-    this.getAllSpecification();
-    if (this.infoForm.id > 0) {
-      this.getSpecData();
-      this.getGalleryList();
-    }
-    this.root = api.rootUrl;
-    this.qiniuZone = api.qiniu;
+    // this.infoForm.id = this.$route.query.id || 0;
+    // this.getInfo();
+    // this.getAllCategory();
+    // this.getExpressData();
+    // this.getQiniuToken();
+    // this.getAllSpecification();
+    // if (this.infoForm.id > 0) {
+    //   this.getSpecData();
+    //   this.getGalleryList();
+    // }
+    // this.root = api.rootUrl;
+    // this.qiniuZone = api.qiniu;
   },
 };
 </script>
