@@ -32,77 +32,22 @@
           <el-form-item label="分类名称" prop="name">
             <el-input v-model="infoForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="简短介绍">
+          <!-- <el-form-item label="简短介绍">
             <el-input
               type="textarea"
               v-model="infoForm.front_name"
               :rows="1"
             ></el-input>
             <div class="form-tip"></div>
-          </el-form-item>
-          <el-form-item
-            label="分类图片"
-            prop="img_url"
-          >
-            <img
-              v-if="infoForm.img_url"
-              :src="infoForm.img_url"
-              class="image-show"
-            />
-            <el-upload
-              class="upload-demo"
-              name="file"
-              :action="qiniuZone"
-              :on-remove="bannerRemove"
-              :before-remove="beforeBannerRemove"
-              :file-list="fileList"
-              :on-success="handleUploadBannerSuccess"
-              :data="picData"
-              :before-upload="getQiniuToken"
-            >
-              <el-button v-if="!infoForm.img_url" size="small" type="primary"
-                >点击上传</el-button
-              >
-            </el-upload>
-            <div class="form-tip">
-              图片尺寸：顶级分类为690*自定义, 只能上传jpg/png文件
-            </div>
-          </el-form-item>
-          <!-- <el-form-item
-            label="分类图片高度"
-            prop="name"
-          >
-            <el-input v-model="infoForm.p_height"></el-input>
           </el-form-item> -->
-          <el-form-item
-            label="图标"
-            prop="icon_url"
-            v-if="infoForm.parent_id == 0"
-          >
-            <img
-              v-if="infoForm.icon_url"
-              :src="infoForm.icon_url"
-              class="image-show"
+          <el-form-item label="分类图片" prop="img_url">
+            <upload-img
+              :fileList="infoForm.fileList"
+              :is-put-oss="true"
+              :oss-path-prefix="'goods'"
+              @input="uploadSuccess"
+              :max-count="1"
             />
-            <el-upload
-              class="upload-demo"
-              name="file"
-              :action="qiniuZone"
-              :on-remove="iconRemove"
-              :before-remove="beforeIconRemove"
-              :file-list="fileList2"
-              :data="picData"
-              :on-success="handleUploadIconSuccess"
-              :before-upload="getQiniuToken"
-            >
-              <el-button v-if="!infoForm.icon_url" size="small" type="primary"
-                >点击上传</el-button
-              >
-            </el-upload>
-
-            <div class="form-tip">
-              图片尺寸：图标250*250, 只能上传jpg/png文件
-            </div>
           </el-form-item>
           <el-form-item label="排序">
             <el-input-number
@@ -123,13 +68,13 @@
 
 <script>
 import http from "@/api/goods";
+import UploadImg from "../../common/components/UploadImg.vue";
+const dayjs = require('dayjs')
 export default {
   data() {
     return {
       root: "",
       qiniuZone: "",
-      fileList: [],
-      fileList2: [],
       parentCategory: [
         {
           id: 0,
@@ -145,6 +90,7 @@ export default {
         sort_order: 100,
         icon_url: "",
         // is_show: true,
+        fileList: [],
       },
       infoRules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
@@ -158,52 +104,38 @@ export default {
           { required: true, message: "请选择分类图标", trigger: "blur" },
         ],
       },
-      picData: {
-        token: "",
-      },
-      url: "",
     };
   },
   methods: {
-    getQiniuToken() {
-      let that = this;
-      this.axios.post("index/getQiniuToken").then((response) => {
-        let resInfo = response.data.data;
-        console.log(resInfo);
-        that.picData.token = resInfo.token;
-        that.url = resInfo.url;
+    // 查询分类
+    categoryMessage() {
+      let param = {
+        id: this.infoForm.id,
+      };
+      http.checkCategory(param).then((res) => {
+        if (res.code === 200) {
+          console.log('121212',this.$dayjs().valueOf())
+          const { categoryName, categoryPicture, categorySort, id } = res.data;
+          this.infoForm = {
+            name: categoryName,
+            img_url: categoryPicture,
+            sort_order: categorySort,
+            id,
+            fileList:[{
+              uid:this.$dayjs().valueOf(),
+              url:categoryPicture,
+              status:'success',
+              name: this.$dayjs().valueOf()
+            }]
+          };
+        }
+        console.log("message", res);
       });
     },
     beforeBannerRemove(file, fileList) {
       return this.$confirm(`确定移除该图？删除后将无法找回`);
     },
-    beforeIconRemove(file, fileList) {
-      return this.$confirm(`确定移除图标？删除后将无法找回`);
-    },
-    bannerRemove(file, fileList) {
-      this.infoForm.img_url = "";
-      let id = this.infoForm.id;
-      this.axios
-        .post("category/deleteBannerImage", { id: id })
-        .then((response) => {
-          this.$message({
-            type: "success",
-            message: "删除成功",
-          });
-        });
-    },
-    iconRemove(file, fileList) {
-      this.infoForm.icon_url = "";
-      let id = this.infoForm.id;
-      this.axios
-        .post("category/deleteIconImage", { id: id })
-        .then((response) => {
-          this.$message({
-            type: "success",
-            message: "删除成功",
-          });
-        });
-    },
+
     goBackPage() {
       this.$router.go(-1);
     },
@@ -212,8 +144,17 @@ export default {
       console.log(this.infoForm.level);
       this.$refs["infoForm"].validate((valid) => {
         if (valid) {
-          this.axios.post("category/store", this.infoForm).then((response) => {
-            if (response.data.errno === 0) {
+          const { name, img_url, sort_order } = this.infoForm;
+          let params = {
+            parentId: 0,
+            categoryType: 1,
+            categoryName: name,
+            categoryPicture: img_url,
+            categoryStatus: 0,
+            categorySort: sort_order,
+          };
+          http.createcategory(params).then((res) => {
+            if (res.code === 200) {
               this.$message({
                 type: "success",
                 message: "保存成功",
@@ -272,14 +213,30 @@ export default {
           that.infoForm = resInfo;
         });
     },
+    /**
+     * @description:图片/文件上传线上成功返回
+     * @param  {*}
+     * @return {*}
+     * @param {*} data 文件信息及线上链接
+     */
+    uploadSuccess(data) {
+      this.infoForm.fileList = data;
+      this.infoForm.img_url = data[0].url;
+      // console.log("imageData-----", this.infoForm.fileList,data,  this.infoForm);
+    },
   },
   mounted() {
     // this.getTopCategory();
-    // this.infoForm.id = this.$route.query.id || 0;
+    this.infoForm.id = this.$route.query.id || 0;
+    if (this.infoForm.id) {
+      this.categoryMessage();
+    }
     // this.getInfo();
     // this.root = api.rootUrl;
     // this.qiniuZone = api.qiniu;
-    // this.getQiniuToken();
+  },
+  components: {
+    UploadImg,
   },
 };
 </script>

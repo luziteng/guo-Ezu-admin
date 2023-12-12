@@ -87,8 +87,10 @@
     // 属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用；
     computed: {
       value() {
+        console.log('3321123123123123')
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.imgLength = this.fileList.length
+        console.log('file.list',this.fileList.length)
         return this.fileList
       }
     },
@@ -122,6 +124,7 @@
             file.status = 'done'
             file.message = '上传成功'
             this.imgList.push(file)
+            // this.imgLength = this.imgList.length
             this.$emit('input', this.imgList)
             this.$forceUpdate()// 强制渲染
           })

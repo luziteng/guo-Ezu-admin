@@ -8,7 +8,7 @@
         <div class="content-main">
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="商品分类" name="first"></el-tab-pane>
-                <el-tab-pane label="商品型号" name="second"></el-tab-pane>
+                <!-- <el-tab-pane label="商品型号" name="second"></el-tab-pane> -->
             </el-tabs>
             <div class="form-table-box">
                 <div class="btn-wrap">
@@ -29,12 +29,7 @@
                     </el-table-column>
                     <el-table-column label="图标显示" width="80">
                         <template slot-scope="scope">
-                            <el-switch
-                                    v-model="scope.row.categoryPicture"
-                                    active-text=""
-                                    inactive-text=""
-                                    @change='changeChannelStatus($event,scope.row.id)'>
-                            </el-switch>
+                            <img :src="scope.row.categoryPicture" alt="" style="width: 60px;height: 60px">
                         </template>
                     </el-table-column>
                     <!-- <el-table-column label="首页显示" width="80">
@@ -67,7 +62,7 @@
                     <el-table-column label="操作" width="300">
                         <template slot-scope="scope">
                             <el-button size="small" @click="handleRowEdit(scope.$index, scope.row)">编辑</el-button>
-                            <el-button size="small" type="danger" @click="handleRowDelete(scope.$index, scope.row)">删除
+                            <el-button size="small" type="danger" @click="handleRowDelete( scope.row.id)">删除
                             </el-button>
                         </template>
                     </el-table-column>
@@ -184,15 +179,17 @@ import http from '@/api/goods'
                     })
                 });
             },
-            handleRowDelete(index, row) {
+            handleRowDelete(id) {
                 this.$confirm('确定要删除?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.axios.post('category/destory', {id: row.id}).then((response) => {
-                        console.log(response.data)
-                        if (response.data.errno === 0) {
+                    let params = {
+                        id,
+                    }
+                    http.deleteCategory(params).then(res=>{
+                        if (res.data.errno === 0) {
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!'

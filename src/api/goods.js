@@ -15,5 +15,29 @@ categoryList(data) {
       method:'post',
       data
     })
+  },
+  // 删除分类
+  deleteCategory(data){
+    return request({
+      url:'/api/category/delete',
+      method:'delete',
+      data
+    })
+  },
+  // 修改分类
+  changeCategory(data){
+    return request({
+      url:'/api/category/update',
+      method:'put',
+      data
+    })
+  },
+  // 查询分类信息
+  checkCategory(data){
+    return request({
+      url:"/api/category/selectInfo",
+      method:'post',
+      data
+    })
   }
 }
