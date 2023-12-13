@@ -189,7 +189,7 @@ import http from '@/api/goods'
                         id,
                     }
                     http.deleteCategory(params).then(res=>{
-                        if (res.data.errno === 0) {
+                        if (res.code === 200) {
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!'

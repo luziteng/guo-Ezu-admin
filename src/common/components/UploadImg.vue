@@ -9,7 +9,7 @@
     <div class="uploadImg">
       <el-upload
         :class="(maxCount>imgLength)?'uploadImgContent':'uploadImgContentNone'"
-        :file-list="value"
+        :file-list="fileList"
         :limit="maxCount"
         :drag="isDrag"
         :http-request="onUploadFile"
@@ -17,6 +17,7 @@
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
         :on-error="handleError"
+        :on-change="changeValue"
         action=""
         accept="image/png,image/jpg,image/jpeg"
         list-type="picture-card"
@@ -86,16 +87,23 @@
     },
     // 属性的结果会被缓存，除非依赖的响应式属性变化才会重新计算。主要当作属性来使用；
     computed: {
-      value() {
-        console.log('3321123123123123')
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.imgLength = this.fileList.length
-        console.log('file.list',this.fileList.length)
-        return this.fileList
-      }
+      // value() {
+      //   console.log('3321123123123123')
+      //   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      //   // this.imgLength = this.fileList.length
+      //   // console.log('file.list',this.fileList.length)
+      //   return this.fileList
+      // }
     },
     // 对象内部的属性监听，也叫深度监听
     watch: {
+      fileList: {
+        handler(val) {
+          console.log(222222222222, val, val.length)
+          this.imgLength = val.length
+        },
+        immediate: true
+      }
     },
     // 请求数据
     created() {
@@ -124,7 +132,6 @@
             file.status = 'done'
             file.message = '上传成功'
             this.imgList.push(file)
-            // this.imgLength = this.imgList.length
             this.$emit('input', this.imgList)
             this.$forceUpdate()// 强制渲染
           })
@@ -231,6 +238,13 @@
       },
       handleError(err, file, fileList) {
         console.log('error:', err, file, fileList)
+      },
+      changeValue(file, fileList){
+        console.log('=============filechange',file, fileList)
+        this.imgLength = file.length
+        // if(fileList.length >= 1) {
+        //   fileList.splice(0, 1)
+        // }
       }
     }
   }

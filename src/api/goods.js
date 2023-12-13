@@ -17,11 +17,11 @@ categoryList(data) {
     })
   },
   // 删除分类
-  deleteCategory(data){
+  deleteCategory(params){
     return request({
       url:'/api/category/delete',
       method:'delete',
-      data
+      params
     })
   },
   // 修改分类
@@ -36,6 +36,14 @@ categoryList(data) {
   checkCategory(data){
     return request({
       url:"/api/category/selectInfo",
+      method:'post',
+      data
+    })
+  },
+  // 新增商品
+  addGoods(data){
+    return request({
+      url:'/api/product/insert',
       method:'post',
       data
     })

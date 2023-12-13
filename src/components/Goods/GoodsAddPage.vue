@@ -26,31 +26,28 @@
           <el-form-item label="商品分类">
             <el-select
               class="el-select-class"
-              v-model="cateId"
+              v-model="infoForm.categoryIds"
               placeholder="选择型号分类"
             >
               <el-option
                 v-for="item in cateOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.id"
+                :label="item.categoryName"
+                :value="item.id"
               >
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item
-            label="商品图片"
-            prop="list_pic_url"
-          >
+          <el-form-item label="商品图片" prop="list_pic_url">
             <upload-img
-              v-model="infoForm.fileList"
+              :file-list="infoForm.fileList"
               :is-put-oss="true"
               :max-count="9"
               :oss-path-prefix="'goods'"
               @input="uploadSuccess"
             />
           </el-form-item>
-          <el-form-item label="商品轮播图" prop="goods_sn">
+          <!-- <el-form-item label="商品轮播图" prop="goods_sn">
             <draggable
               v-model="gallery_list"
               draggable=".gallery-item"
@@ -92,27 +89,27 @@
                 <i class="el-icon-plus"></i>
               </el-upload>
             </draggable>
+          </el-form-item> -->
+          <el-form-item label="商品名称" prop="productName">
+            <el-input v-model="infoForm.productName"></el-input>
           </el-form-item>
-          <el-form-item label="商品名称" prop="name">
-            <el-input v-model="infoForm.name"></el-input>
-          </el-form-item>
-          <el-form-item label="商品简介" prop="goods_brief">
+          <el-form-item label="商品简介" prop="productTitle">
             <el-input
               type="textarea"
-              v-model="infoForm.goods_brief"
+              v-model="infoForm.productTitle"
               :rows="3"
             ></el-input>
             <div class="form-tip"></div>
           </el-form-item>
-          <el-form-item label="商品单位" prop="goods_unit">
-            <el-input v-model="infoForm.goods_unit"></el-input>
+          <el-form-item label="商品单位" prop="productSale">
+            <el-input v-model="infoForm.productSale"></el-input>
             <div class="form-tip">如：件、包、袋</div>
           </el-form-item>
-          <el-form-item label="销量" prop="sell_volume">
-            <el-input v-model="infoForm.sell_volume"></el-input>
+          <el-form-item label="销量" prop="specRules">
+            <el-input v-model="infoForm.specRules"></el-input>
           </el-form-item>
           <el-form-item label="型号和价格">
-            <div>
+            <!-- <div>
               <el-select
                 class="el-select-class"
                 v-model="specValue"
@@ -126,7 +123,7 @@
                 >
                 </el-option>
               </el-select>
-            </div>
+            </div> -->
             <div class="spec-wrap">
               <el-table :data="specData" stripe style="width: 100%">
                 <el-table-column prop="goods_sn" label="商品SKU" width="140">
@@ -139,7 +136,7 @@
                     ></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                   prop="goods_aka"
                   label="快递单上的简称"
                   width="160"
@@ -151,8 +148,8 @@
                       placeholder="简称"
                     ></el-input>
                   </template>
-                </el-table-column>
-                <el-table-column prop="value" label="型号/规格" width="130">
+                </el-table-column> -->
+                <!-- <el-table-column prop="value" label="型号/规格" width="130">
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
@@ -160,8 +157,8 @@
                       placeholder="如1斤/条"
                     ></el-input>
                   </template>
-                </el-table-column>
-                <el-table-column prop="cost" label="成本(元)" width="100">
+                </el-table-column> -->
+                <!-- <el-table-column prop="cost" label="成本(元)" width="100">
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
@@ -169,7 +166,7 @@
                       placeholder="成本"
                     ></el-input>
                   </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                   prop="retail_price"
                   label="零售(元)"
@@ -243,11 +240,11 @@
               </el-option>
             </el-select>
           </el-form-item> -->
-          <el-form-item label="排序" prop="sort_order">
+          <el-form-item label="排序" prop="productSort">
             <el-input-number
               :mini="1"
               :max="100"
-              v-model="infoForm.sort_order"
+              v-model="infoForm.productSort"
             ></el-input-number>
           </el-form-item>
           <el-form-item label=" ">
@@ -256,13 +253,13 @@
               inactive-text="下架"
               active-value="1"
               inactive-value="0"
-              v-model="infoForm.is_on_sale"
+              v-model="infoForm.productStatus"
             ></el-switch>
           </el-form-item>
-          <el-form-item label="商品详情" prop="goods_desc">
+          <el-form-item label="商品详情" prop="productDetail">
             <div class="edit_container">
               <quill-editor
-                v-model="infoForm.goods_desc"
+                v-model="infoForm.productDetail"
                 ref="myTextEditor"
                 class="editer"
                 :options="editorOption"
@@ -310,7 +307,6 @@
 </template>
 
 <script>
-import api from "@/config/api";
 import lrz from "lrz";
 import moment from "moment";
 import "quill/dist/quill.core.css";
@@ -319,7 +315,8 @@ import "quill/dist/quill.bubble.css";
 import draggable from "vuedraggable";
 import $ from "jquery";
 import { quillEditor } from "vue-quill-editor";
-import UploadImg from "../../common/components/UploadImg.vue"
+import UploadImg from "../../common/components/UploadImg.vue";
+import http from "@/api/goods";
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"],
   ["blockquote"],
@@ -389,24 +386,28 @@ export default {
       },
       category: [],
       infoForm: {
-        name: "",
+        categoryIds:'',
+        productName: "",
+        productTitle:'',
+        productSale:'',
+        productSort:null,
         list_pic_url: "",
         goods_brief: "",
-        goods_desc: "",
+        productDetail: "",
         is_on_sale: 0,
         is_new: false,
         // is_index: false,
-        fileList:[]
+        fileList: [],
       },
       infoRules: {
-        name: [
+        productName: [
           {
             required: true,
             message: "请输入名称",
             trigger: "blur",
           },
         ],
-        goods_brief: [
+        productTitle: [
           {
             required: true,
             message: "请输入简介",
@@ -481,76 +482,13 @@ export default {
           console.log(err);
         });
     },
-    handleUploadListSuccess(res) {
-      let url = this.url;
-      this.infoForm.list_pic_url = url + res.key;
-      console.log(this.infoForm.list_pic_url);
-      this.axios
-        .post("goods/uploadHttpsImage", {
-          url: this.infoForm.list_pic_url,
-        })
-        .then((response) => {
-          let lastUrl = response.data.data;
-          this.infoForm.https_pic_url = lastUrl;
-        });
-    },
-    onRemoveHandler(index) {
-      let that = this;
-      that
-        .$confirm("确定删除该图片?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .then(() => {
-          let arr = that.gallery_list;
-          arr[index].is_delete = 1;
-        })
-        .catch(() => {});
-    },
-    uploadGalleryImg(request) {
-      const file = request.file;
-      lrz(file)
-        .then((rst) => {
-          const config = {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          };
-          const fileName =
-            moment().format("YYYYMMDDHHmmssSSS") +
-            Math.floor(Math.random() * 100) +
-            file.name; //自定义图片名
-          const formData = new FormData();
-          formData.append("file", rst.file);
-          formData.append("token", this.picData.token);
-          formData.append("key", fileName);
-          this.$http.post(this.qiniuZone, formData, config).then((res) => {
-            this.handleUploadGallerySuccess(res.data);
-          });
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
-    },
-    handleUploadGallerySuccess(res) {
-      let url = this.url;
-      let urlData = url + res.key;
-      let data = {
-        id: 0,
-        url: urlData,
-        is_delete: 0,
-      };
-      this.gallery_list.push(data);
-    },
+
+
+
     test() {
       console.log(this.gallery_list);
     },
-    previewIndexImg() {
-      let that = this;
-      that.previewList = [];
-      that.previewList.push(that.infoForm.list_pic_url);
-    },
+
     previewImg(index) {
       let that = this;
       that.previewList = [];
@@ -622,14 +560,6 @@ export default {
     hasErrorAct(err) {
       console.log(err);
     },
-    getQiniuToken() {
-      let that = this;
-      this.axios.post("index/getQiniuToken").then((response) => {
-        let resInfo = response.data.data;
-        that.picData.token = resInfo.token;
-        that.url = resInfo.url;
-      });
-    },
     specChange(value) {
       this.specForm.id = value;
     },
@@ -659,22 +589,7 @@ export default {
     submitUpload() {
       this.$refs.upload.submit();
     },
-    delePicList() {
-      let that = this;
-      that
-        .$confirm("确定删除该图片?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .then(() => {
-          that.infoForm.list_pic_url = "";
-        })
-        .catch(() => {});
-    },
-    indexImgBefore(file) {
-      this.getQiniuToken();
-    },
+
     galleryBefore(file) {
       this.picData.key =
         new Date().getTime() + Math.floor(Math.random() * 100) + file.name; //自定义图片名
@@ -771,13 +686,13 @@ export default {
             });
             return false;
           }
-          if (this.gallery_list.length == 0) {
-            this.$message({
-              type: "error",
-              message: "请至少上传一张轮播图！",
-            });
-            return false;
-          }
+          // if (this.gallery_list.length == 0) {
+          //   this.$message({
+          //     type: "error",
+          //     message: "请至少上传一张轮播图！",
+          //   });
+          //   return false;
+          // }
           if (this.specData.length == 0) {
             this.$message({
               type: "error",
@@ -801,16 +716,24 @@ export default {
             }
           }
           this.infoForm.gallery = this.gallery_list;
+          const {categoryIds, productName,productTitle,productSort,productSale,productDetail} = this.infoForm
+            let param = {
+              productName,
+              productTitle,
+              productPicture,
+              productDetail,
+              productStatus,
+              productSort,
+              productSale,
+              categoryIds,
+              specGroups:[
+
+              ]
+            }
           // return false;
-          this.axios
-            .post("goods/store", {
-              info: this.infoForm,
-              specData: this.specData,
-              specValue: this.specValue,
-              cateId: this.cateId,
-            })
-            .then((response) => {
-              if (response.data.errno === 0) {
+          http.addGoods(param).then(res=>{
+
+            if (response.data.errno === 0) {
                 this.$message({
                   type: "success",
                   message: "保存成功",
@@ -824,7 +747,8 @@ export default {
                   message: "保存失败",
                 });
               }
-            });
+          })
+
         } else {
           return false;
         }
@@ -913,17 +837,15 @@ export default {
         that.specOptionsList = resInfo;
       });
     },
+    // 分类列表
     getExpressData() {
-      let that = this;
-      this.axios
-        .get("goods/getExpressData", {
-          params: {},
-        })
-        .then((response) => {
-          let options = response.data.data;
-          that.kdOptions = options.kd;
-          that.cateOptions = options.cate;
-        });
+      let params = {
+        parentId: undefined,
+        categoryType: undefined,
+      };
+      http.categoryList(params).then((res) => {
+        this.cateOptions = res.data;
+      });
     },
     // summernote 上传图片，返回链接
     sendFile(file) {},
@@ -950,24 +872,26 @@ export default {
         },
       }),
         // console.error(that.infoForm.goods_desc);
-        $("#summernote").summernote("code", that.infoForm.goods_desc);
+        $("#summernote").summernote("code", that.infoForm.productDetail);
     },
-     /**
+    /**
      * @description:图片/文件上传线上成功返回
      * @param  {*}
      * @return {*}
      * @param {*} data 文件信息及线上链接
      */
-     uploadSuccess(data) {
-      this.fileList=data
-      console.log('imageData-----', data)
-    }
-
+    uploadSuccess(data) {
+      console.log('this', data,this.infoForm)
+      // this.$set(this.infoform, 'fileList', data)
+      this.infoform.fileList = [...data];
+      this.infoform.list_pic_url = data.map(({url})=>url)
+      console.log("imageData-----", data,this.infoform.list_pic_url );
+    },
   },
   components: {
     quillEditor,
     draggable,
-    UploadImg
+    UploadImg,
   },
   computed: {
     editor() {
@@ -975,10 +899,10 @@ export default {
     },
   },
   mounted() {
+    this.getExpressData();
     // this.infoForm.id = this.$route.query.id || 0;
     // this.getInfo();
     // this.getAllCategory();
-    // this.getExpressData();
     // this.getQiniuToken();
     // this.getAllSpecification();
     // if (this.infoForm.id > 0) {
