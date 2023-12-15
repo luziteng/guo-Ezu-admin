@@ -3,48 +3,48 @@ let request = requestConfig()
 export default{
   login(data) {
     return request({
-      url: '/api/admin/login',
+      url: '/admin/login',
       method: 'post',
       data
     })
   },
   loginout(){
     return request({
-      url: '/api/admin/logout',
+      url: '/admin/logout',
       method: 'post',
     })
   },
   userList(data){
     return request({
-      url: '/api/admin/selectList',
+      url: '/admin/selectList',
       method: 'post',
       data
     })
   },
   userUpdate(data){
     return request({
-      url: '/api/admin/update',
+      url: '/admin/update',
       method: 'put',
       data
     })
   },
   deleteUser(data){
     return request({
-      url: '/api/admin/update',
+      url: '/admin/update',
       method: 'put',
       data
     })
   },
   registerUser(data){
     return request({
-      url: '/api/admin/register',
+      url: '/admin/register',
       method: 'post',
       data
     })
   },
   customerList(data){
     return request({
-      url: '/api/user/selectList',
+      url: '/user/selectList',
       method: 'post',
       data
     })
@@ -52,7 +52,7 @@ export default{
   // 获取oss授权
   getOssToken(){
     return request({
-      url: '/api/storage/getStsToken',
+      url: '/storage/getStsToken',
       method: 'get',
     })
   }

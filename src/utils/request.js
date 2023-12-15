@@ -7,7 +7,9 @@ import router from '@/router'
 let timer = null
 const that = this
 export default function generateRequest(config){
-  let base_url = process.env.VUE_APP_API_BASE_URL
+  console.log('process.env',process.env)
+  let base_url = process.env.NODE_ENV ==='prod'? process.env.VUE_APP_API_BASE_URL : '/api'
+  console.log(333333333333, base_url)
 
   const defaultConfig = {
     // timeout: 1000 * 30,
@@ -79,7 +81,7 @@ const errorHandler = (error) => {
         message: '登录失效，请重新登录',
       });
         localStorage.clear();
-        that.$router.push({ name: "login" });
+        router.push({ name: "login" });
     }
   }
   return Promise.reject(error)

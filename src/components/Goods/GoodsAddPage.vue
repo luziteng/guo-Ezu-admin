@@ -28,6 +28,7 @@
               class="el-select-class"
               v-model="infoForm.categoryIds"
               placeholder="选择型号分类"
+              multiple 
             >
               <el-option
                 v-for="item in cateOptions"
@@ -47,7 +48,7 @@
               @input="uploadSuccess"
             />
           </el-form-item>
-          <!-- <el-form-item label="商品轮播图" prop="goods_sn">
+          <!-- <el-form-item label="商品轮播图" prop="specName">
             <draggable
               v-model="gallery_list"
               draggable=".gallery-item"
@@ -101,12 +102,12 @@
             ></el-input>
             <div class="form-tip"></div>
           </el-form-item>
-          <el-form-item label="商品单位" prop="productSale">
+          <!-- <el-form-item label="库存" prop="productSale">
             <el-input v-model="infoForm.productSale"></el-input>
             <div class="form-tip">如：件、包、袋</div>
-          </el-form-item>
-          <el-form-item label="销量" prop="specRules">
-            <el-input v-model="infoForm.specRules"></el-input>
+          </el-form-item> -->
+          <el-form-item label="销量" prop="productSale">
+            <el-input v-model="infoForm.productSale"></el-input>
           </el-form-item>
           <el-form-item label="型号和价格">
             <!-- <div>
@@ -125,14 +126,17 @@
               </el-select>
             </div> -->
             <div class="spec-wrap">
-              <el-table :data="specData" stripe style="width: 100%">
-                <el-table-column prop="goods_sn" label="商品SKU" width="140">
+              <el-table :data="specGroups" stripe style="width: 100%">
+                <el-table-column
+                  prop="specName"
+                  label="商品型号"
+                  width="140"
+                >
                   <template slot-scope="scope">
                     <el-input
-                      @blur="checkSkuOnly(scope.$index, scope.row)"
                       size="mini"
-                      v-model="scope.row.goods_sn"
-                      placeholder="商品SKU"
+                      v-model="scope.row.specName"
+                      placeholder="商品型号"
                     ></el-input>
                   </template>
                 </el-table-column>
@@ -168,19 +172,19 @@
                   </template>
                 </el-table-column> -->
                 <el-table-column
-                  prop="retail_price"
+                  prop="specPrice"
                   label="零售(元)"
                   width="100"
                 >
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
-                      v-model="scope.row.retail_price"
+                      v-model="scope.row.specPrice"
                       placeholder="零售"
                     ></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                   prop="goods_weight"
                   label="重量(KG)"
                   width="100"
@@ -192,12 +196,12 @@
                       placeholder="重量"
                     ></el-input>
                   </template>
-                </el-table-column>
-                <el-table-column prop="goods_number" label="库存" width="100">
+                </el-table-column> -->
+                <el-table-column prop="specStock" label="库存" width="100">
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
-                      v-model="scope.row.goods_number"
+                      v-model="scope.row.specStock"
                       placeholder="库存"
                     ></el-input>
                   </template>
@@ -247,12 +251,12 @@
               v-model="infoForm.productSort"
             ></el-input-number>
           </el-form-item>
-          <el-form-item label=" ">
+          <el-form-item label="商品状态">
             <el-switch
               active-text="上架"
               inactive-text="下架"
-              active-value="1"
-              inactive-value="0"
+              :active-value="1"
+              :inactive-value="0"
               v-model="infoForm.productStatus"
             ></el-switch>
           </el-form-item>
@@ -386,16 +390,15 @@ export default {
       },
       category: [],
       infoForm: {
-        categoryIds:'',
+        categoryIds: "",
         productName: "",
-        productTitle:'',
-        productSale:'',
-        productSort:null,
+        productTitle: "",
+        productSale: "",
+        productSort: null,
         list_pic_url: "",
         goods_brief: "",
         productDetail: "",
-        is_on_sale: 0,
-        is_new: false,
+        productStatus:0,
         // is_index: false,
         fileList: [],
       },
@@ -431,14 +434,13 @@ export default {
           },
         ],
       },
-      specData: [
+      specGroups: [
         {
-          goods_sn: "",
-          value: "",
-          cost: "",
-          retail_price: "",
-          goods_weight: "",
-          goods_number: "",
+          specName: "",
+          specPicture: "",
+          specPrice: "",
+          specStock: "",
+          specSale: "",
         },
       ],
       specOptionsList: [],
@@ -483,8 +485,6 @@ export default {
         });
     },
 
-
-
     test() {
       console.log(this.gallery_list);
     },
@@ -498,34 +498,34 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    checkSkuOnly(index, row) {
-      console.log(index);
-      console.log(row);
-      if (row.goods_sn == "") {
-        this.$message({
-          type: "error",
-          message: "SKU不能为空",
-        });
-        return false;
-      }
-      this.axios
-        .post("goods/checkSku", {
-          info: row,
-        })
-        .then((response) => {
-          if (response.data.errno === 100) {
-            this.$message({
-              type: "error",
-              message: "该SKU已存在！",
-            });
-          } else {
-            this.$message({
-              type: "success",
-              message: "该SKU可以用！",
-            });
-          }
-        });
-    },
+    // checkSkuOnly(index, row) {
+    //   console.log(index);
+    //   console.log(row);
+    //   if (row.specName == "") {
+    //     this.$message({
+    //       type: "error",
+    //       message: "SKU不能为空",
+    //     });
+    //     return false;
+    //   }
+    //   this.axios
+    //     .post("goods/checkSku", {
+    //       info: row,
+    //     })
+    //     .then((response) => {
+    //       if (response.data.errno === 100) {
+    //         this.$message({
+    //           type: "error",
+    //           message: "该SKU已存在！",
+    //         });
+    //       } else {
+    //         this.$message({
+    //           type: "success",
+    //           message: "该SKU可以用！",
+    //         });
+    //       }
+    //     });
+    // },
     getSpecData() {
       let id = this.infoForm.id;
       this.axios
@@ -535,24 +535,23 @@ export default {
         .then((response) => {
           if (response.data.errno === 0) {
             let info = response.data.data;
-            this.specData = info.specData;
+            this.specGroups = info.specGroups;
             this.specValue = info.specValue;
           }
         });
     },
     addSpecData() {
       let ele = {
-        goods_sn: "",
-        value: "",
-        cost: "",
-        retail_price: "",
-        goods_weight: "",
-        goods_number: "",
+        specName: "",
+          specPicture: "",
+          specPrice: "",
+          specStock: "",
+          specSale: "",
       };
-      this.specData.push(ele);
+      this.specGroups.push(ele);
     },
     specDelete(index, row) {
-      this.specData.splice(index, 1);
+      this.specGroups.splice(index, 1);
     },
     testCallBack() {
       console.log(this.specValue);
@@ -668,7 +667,7 @@ export default {
                 message: "复制成功!",
               });
               //                            this.is_has_spec = false;
-              //                            this.specData = [];
+              //                            this.specGroups = [];
             }
           });
       });
@@ -693,19 +692,19 @@ export default {
           //   });
           //   return false;
           // }
-          if (this.specData.length == 0) {
+          if (this.specGroups.length == 0) {
             this.$message({
               type: "error",
               message: "请添加一个规格型号",
             });
             return false;
           }
-          for (const ele of this.specData) {
+          for (const ele of this.specGroups) {
             if (
               ele.cost == "" ||
-              ele.goods_sn == "" ||
+              ele.specName == "" ||
               ele.goods_weight == "" ||
-              ele.retail_price == "" ||
+              ele.specPrice == "" ||
               ele.value == ""
             ) {
               this.$message({
@@ -716,39 +715,43 @@ export default {
             }
           }
           this.infoForm.gallery = this.gallery_list;
-          const {categoryIds, productName,productTitle,productSort,productSale,productDetail} = this.infoForm
-            let param = {
-              productName,
-              productTitle,
-              productPicture,
-              productDetail,
-              productStatus,
-              productSort,
-              productSale,
-              categoryIds,
-              specGroups:[
-
-              ]
-            }
+          const {
+            categoryIds,
+            list_pic_url,
+            productName,
+            productTitle,
+            productSort,
+            productSale,
+            productDetail,
+            productStatus 
+          } = this.infoForm;
+          let param = {
+            productName,
+            productTitle,
+            productPicture: list_pic_url,
+            productDetail,
+            productStatus,
+            productSort,
+            productSale,
+            categoryIds,
+            specs: this.specGroups,
+          };
           // return false;
-          http.addGoods(param).then(res=>{
-
-            if (response.data.errno === 0) {
-                this.$message({
-                  type: "success",
-                  message: "保存成功",
-                });
-                this.infoForm.id = response.data.data;
-                this.getGalleryList();
-                // this.$router.go(-1);
-              } else {
-                this.$message({
-                  type: "error",
-                  message: "保存失败",
-                });
-              }
-          })
-
+          http.addGoods(param).then((res) => {
+            if (res.code === 200) {
+              this.$message({
+                type: "success",
+                message: "保存成功",
+              });
+              // this.getGalleryList();
+              this.$router.go(-1);
+            } else {
+              this.$message({
+                type: "error",
+                message: "保存失败",
+              });
+            }
+          });
         } else {
           return false;
         }
@@ -881,11 +884,11 @@ export default {
      * @param {*} data 文件信息及线上链接
      */
     uploadSuccess(data) {
-      console.log('this', data,this.infoForm)
+      console.log("this", data, this.infoForm);
       // this.$set(this.infoform, 'fileList', data)
-      this.infoform.fileList = [...data];
-      this.infoform.list_pic_url = data.map(({url})=>url)
-      console.log("imageData-----", data,this.infoform.list_pic_url );
+      this.infoForm.fileList = [...data];
+      this.infoForm.list_pic_url = data.map(({ url }) => url);
+      console.log("imageData-----", data, this.infoForm.list_pic_url);
     },
   },
   components: {
