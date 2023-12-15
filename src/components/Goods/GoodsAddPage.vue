@@ -206,6 +206,15 @@
                     ></el-input>
                   </template>
                 </el-table-column>
+                <el-table-column prop="specSale" label="销量" width="100">
+                  <template slot-scope="scope">
+                    <el-input
+                      size="mini"
+                      v-model="scope.row.specSale"
+                      placeholder="销量"
+                    ></el-input>
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作" width="70">
                   <template slot-scope="scope">
                     <el-button
@@ -528,17 +537,12 @@ export default {
     // },
     getSpecData() {
       let id = this.infoForm.id;
-      this.axios
-        .post("specification/getGoodsSpec", {
-          id: id,
-        })
-        .then((response) => {
-          if (response.data.errno === 0) {
-            let info = response.data.data;
-            this.specGroups = info.specGroups;
-            this.specValue = info.specValue;
-          }
-        });
+      
+      http.goodsDetail({id:id}).then(res=>{
+        console.log('res',res)
+        this.specGroups = info.specGroups;
+      })
+
     },
     addSpecData() {
       let ele = {
@@ -903,15 +907,15 @@ export default {
   },
   mounted() {
     this.getExpressData();
-    // this.infoForm.id = this.$route.query.id || 0;
+    this.infoForm.id = this.$route.query.id || undefined;
     // this.getInfo();
     // this.getAllCategory();
     // this.getQiniuToken();
     // this.getAllSpecification();
-    // if (this.infoForm.id > 0) {
-    //   this.getSpecData();
-    //   this.getGalleryList();
-    // }
+    if (this.infoForm.id > 0) {
+      this.getSpecData();
+      // this.getGalleryList();
+    }
     // this.root = api.rootUrl;
     // this.qiniuZone = api.qiniu;
   },

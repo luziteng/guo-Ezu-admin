@@ -5,6 +5,9 @@
         <el-breadcrumb-item>商品列表</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="operation-nav">
+        <el-button type="primary" icon="plus" size="small" :style="{'margin-right':'20px'}"
+            >首页轮播图</el-button
+          >
         <router-link to="/dashboard/goods/add">
           <el-button type="primary" icon="plus" size="small"
             >添加商品</el-button
@@ -41,12 +44,12 @@
           >
         </span>
       </div> -->
-      <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="全部商品" name="first"> </el-tab-pane>
-        <el-tab-pane label="出售中" name="second"></el-tab-pane>
-        <el-tab-pane label="已售完" name="third"></el-tab-pane>
-        <el-tab-pane label="已下架" name="fourth"></el-tab-pane>
-      </el-tabs> -->
+      <el-tabs v-model="productStatus" @tab-click="handleClick">
+        <el-tab-pane label="全部商品" name='one'> </el-tab-pane>
+        <el-tab-pane label="出售中" name='two'></el-tab-pane>
+        <el-tab-pane label="已售完" name='there'></el-tab-pane>
+        <el-tab-pane label="已下架" name='four'></el-tab-pane>
+      </el-tabs>
       <div class="filter-box">
         <el-form :inline="true" :model="filterForm" class="form-inline">
           <el-form-item label="商品名称">
@@ -59,7 +62,7 @@
           <el-form-item label="商品分类">
             <el-select
               class="el-select-class"
-              v-model="filterForm.categoryIds"
+              v-model="filterForm.categoryId"
               placeholder="选择型号分类"
             >
               <el-option
@@ -218,13 +221,14 @@
           </el-table-column> -->
           <el-table-column label="上架" width="80">
             <template slot-scope="scope">
-              <el-switch
+              <div >{{ scope.row.productStatus ===0?'上架':'下架' }}</div>
+              <!-- <el-switch
                 v-model="scope.row.is_on_sale"
                 active-text=""
                 inactive-text=""
                 @change="changeStatus($event, scope.row.id)"
               >
-              </el-switch>
+              </el-switch> -->
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -269,11 +273,11 @@ export default {
       size: 10,
       total: 0,
       filterForm: {
-        name: "",
-        categoryIds: undefined,
+        name: undefined,
+        categoryId: undefined,
       },
       tableData: [],
-      activeName: "second",
+      productStatus: 'two',
       pIndex: 0,
       num: 0,
       activeClass: 0,
@@ -410,24 +414,25 @@ export default {
         .post("goods/updateSort", { id: row.id, sort: row.sort_order })
         .then((response) => {});
     },
-    // handleClick(tab, event) {
-    //   let pindex = tab._data.index;
-    //   this.page = 1;
-    //   this.activeClass = 0;
-    //   if (pindex == 0) {
-    //     this.getList();
-    //     this.pIndex = 0;
-    //   } else if (pindex == 1) {
-    //     this.getOnSaleList();
-    //     this.pIndex = 1;
-    //   } else if (pindex == 2) {
-    //     this.getOutList();
-    //     this.pIndex = 2;
-    //   } else if (pindex == 3) {
-    //     this.getDropList();
-    //     this.pIndex = 3;
-    //   }
-    // },
+    handleClick(tab, event) {
+      this.onSubmitFilter();
+      // let pindex = tab._data.index;
+      // this.page = 1;
+      // this.activeClass = 0;
+      // if (pindex == 0) {
+      //   this.getList();
+      //   this.pIndex = 0;
+      // } else if (pindex == 1) {
+      //   this.getOnSaleList();
+      //   this.pIndex = 1;
+      // } else if (pindex == 2) {
+      //   this.getOutList();
+      //   this.pIndex = 2;
+      // } else if (pindex == 3) {
+      //   this.getDropList();
+      //   this.pIndex = 3;
+      // }
+    },
     handlePageChange(val) {
       this.page = val;
       let nIndex = this.pIndex;
@@ -454,25 +459,26 @@ export default {
       })
         .then(() => {
           let that = this;
-          that.axios.post("goods/destory", { id: row.id }).then((response) => {
-            if (response.data.errno === 0) {
+          http.deleteGoods({id:row.id}).then(res=>{
+            if(res.code === 200){
               that.$message({
                 type: "success",
                 message: "删除成功!",
               });
-              let pIndex = localStorage.getItem("pIndex");
-              console.log(pIndex);
-              if (pIndex == 0) {
-                that.getList();
-              } else if (pIndex == 1) {
-                that.getOnSaleList();
-              } else if (pIndex == 2) {
-                that.getOutList();
-              } else if (pIndex == 3) {
-                that.getDropList();
-              }
+              that.onSubmitFilter();
             }
-          });
+          })
+          // let pIndex = localStorage.getItem("pIndex");
+          //     console.log(pIndex);
+          //     if (pIndex == 0) {
+          //       that.getList();
+          //     } else if (pIndex == 1) {
+          //       that.getOnSaleList();
+          //     } else if (pIndex == 2) {
+          //       that.getOutList();
+          //     } else if (pIndex == 3) {
+          //       that.getDropList();
+          //     }
         })
         .catch(() => {
           //                    this.$message({
@@ -501,9 +507,24 @@ export default {
     },
     getList() {
       const { name, categoryId } = this.filterForm;
+      let status = undefined
+      switch (this.productStatus) {
+        case 'two':
+        status = 0
+          break;
+          case 'there':
+        status = 1
+          break;
+          case 'four':
+        status = 1
+          break;
+        default:
+          break;
+      }
       let params = {
+        productStatus:status,
         productName: name,
-        productTitle: "",
+        productTitle: undefined,
         categoryId,
         pageSize: this.size,
         pageNo: this.page,

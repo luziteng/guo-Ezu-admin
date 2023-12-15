@@ -63,5 +63,21 @@ categoryList(data) {
       method:'post',
       data
     })
+  },
+  // 删除商品
+  deleteGoods(params){
+    return request({
+      url:'/product/delete',
+      method:'delete',
+      params
+    })
+  },
+  // 商品详情
+  goodsDetail(data){
+    return request({
+      url:'/product/selectInfo',
+      method:'post',
+      data
+    })
   }
 }
