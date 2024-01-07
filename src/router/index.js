@@ -221,6 +221,11 @@ export const constantRoutes = [
         component: () => import("@/components/Order/OrderDetailPage"),
       },
       {
+        path: "banner",
+        name: "banner",
+        component: () => import("@/components/Banner/HomeBanner"),
+      },
+      {
         path: "user",
         name: "user",
         component: () => import("@/components/User/UserPage"),

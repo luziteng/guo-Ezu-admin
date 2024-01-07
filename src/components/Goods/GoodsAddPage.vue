@@ -11,8 +11,6 @@
       </el-breadcrumb>
       <div class="operation-nav">
         <!-- <el-button type="primary" @click="test">测试</el-button> -->
-        <el-button type="primary" @click="onSubmitInfo">确定保存</el-button>
-        <el-button @click="goBackPage" icon="arrow-left">返回列表</el-button>
       </div>
     </div>
     <div class="content-main">
@@ -300,7 +298,7 @@
             </el-upload>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmitInfo">确定保存</el-button>
+            <el-button type="primary" @click="onSubmitInfo">{{infoForm.id ? '确定修改' : '确定保存'}}</el-button>
             <el-button @click="goBackPage">返回列表</el-button>
             <el-button
               type="danger"
@@ -538,9 +536,13 @@ export default {
     getSpecData() {
       let id = this.infoForm.id;
       
-      http.goodsDetail({id:id}).then(res=>{
-        console.log('res',res)
-        this.specGroups = info.specGroups;
+      http.goodsDetail({id}).then(res=>{
+        this.infoForm = {...res.data}
+        this.infoForm.fileList = res.data.productPicture.map((item) => ({
+          name: item,
+          url: item
+        }))
+        this.specGroups = res.data.specs;
       })
 
     },
@@ -741,23 +743,48 @@ export default {
             specs: this.specGroups,
           };
           // return false;
-          http.addGoods(param).then((res) => {
-            if (res.code === 200) {
-              this.$message({
-                type: "success",
-                message: "保存成功",
-              });
-              // this.getGalleryList();
-              this.$router.go(-1);
-            } else {
-              this.$message({
-                type: "error",
-                message: "保存失败",
-              });
-            }
-          });
+          if (this.infoForm.id) {
+            this.handleUpdateGoods(param, this.infoForm.id)
+            return
+          }
+          this.hanldeAddGoods(param)
+          
         } else {
           return false;
+        }
+      });
+    },
+    hanldeAddGoods(param) {
+      http.addGoods(param).then((res) => {
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "保存成功",
+          });
+          // this.getGalleryList();
+          this.$router.go(-1);
+        } else {
+          this.$message({
+            type: "error",
+            message: "保存失败",
+          });
+        }
+      });
+    },
+    handleUpdateGoods(param, id) {
+      http.updateGoods({...param, id}).then((res) => {
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "修改成功",
+          });
+          // this.getGalleryList();
+          this.$router.go(-1);
+        } else {
+          this.$message({
+            type: "error",
+            message: "修改失败",
+          });
         }
       });
     },

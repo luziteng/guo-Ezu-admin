@@ -5,13 +5,10 @@
         <el-breadcrumb-item>商品列表</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="operation-nav">
-        <el-button type="primary" icon="plus" size="small" :style="{'margin-right':'20px'}"
-            >首页轮播图</el-button
-          >
         <router-link to="/dashboard/goods/add">
-          <el-button type="primary" icon="plus" size="small"
-            >添加商品</el-button
-          >
+          <el-button type="primary" icon="plus" size="small">
+            添加商品
+          </el-button>
         </router-link>
       </div>
     </div>
@@ -219,9 +216,9 @@
               </el-switch>
             </template>
           </el-table-column> -->
-          <el-table-column label="上架" width="80">
+          <el-table-column label="商品状态" width="80">
             <template slot-scope="scope">
-              <div >{{ scope.row.productStatus ===0?'上架':'下架' }}</div>
+              <div >{{ scope.row.productStatus ===0?'下架':'上架' }}</div>
               <!-- <el-switch
                 v-model="scope.row.is_on_sale"
                 active-text=""
@@ -510,13 +507,13 @@ export default {
       let status = undefined
       switch (this.productStatus) {
         case 'two':
-        status = 0
+          status = 1
           break;
-          case 'there':
-        status = 1
+        case 'there':
+          status = 1
           break;
-          case 'four':
-        status = 1
+        case 'four':
+          status = 0
           break;
         default:
           break;
@@ -634,7 +631,6 @@ export default {
         .then((response) => {});
     },
   },
-  components: {},
   mounted() {
     // this.getOnSaleList();
     this.onSubmitFilter();

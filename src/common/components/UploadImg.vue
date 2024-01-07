@@ -20,10 +20,15 @@
         :on-change="changeValue"
         action=""
         accept="image/png,image/jpg,image/jpeg"
-        list-type="picture-card"
+        :list-type="listType"
+        v-model="$attrs"
       >
-        <i slot="default" class="el-icon-plus"/>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
+        <slot>
+          <slot name="uploadButton">
+            <i slot="default" class="el-icon-plus"/>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
+          </slot>
+        </slot>
       </el-upload>
       <el-dialog :visible.sync="dialogVisible" width="100%" append-to-body>
         <img :src="dialogImageUrl" height="100%" alt="">
@@ -43,6 +48,10 @@
     },
     // 静态
     props: {
+      listType: {
+        type: String,
+        default: 'picture-card'
+      },
       fileList: {
         type: Array,
         default: () => []
@@ -216,6 +225,7 @@
         this.dialogVisible = true
       },
       handleRemove(file, fileList) {
+        this.$emit('onRemove', file)
         // 将本地图片跟线上图片单独分开处理（filtList不使用双向绑定）
         const oldImgList = JSON.parse(JSON.stringify(this.imgList))
         let imgFile = null
