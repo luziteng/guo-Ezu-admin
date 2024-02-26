@@ -40,10 +40,10 @@ module.exports = {
     // before: require("./mock/mock-server.js"),
     proxy: {
       '/api': {
-          target: 'http://8.134.172.68:8000',
+          target: 'https://guoezu.cn:8000',
           changeOrigin: true,
           pathRewrite: {'^/api':''}
-      }
+      } 
   }
   },
   configureWebpack: {

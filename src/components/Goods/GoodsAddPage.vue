@@ -28,7 +28,7 @@
               class="el-select-class"
               v-model="infoForm.categoryIds"
               placeholder="选择型号分类"
-              multiple 
+              multiple
             >
               <el-option
                 v-for="item in cateOptions"
@@ -127,11 +127,7 @@
             </div> -->
             <div class="spec-wrap">
               <el-table :data="specGroups" stripe style="width: 100%">
-                <el-table-column
-                  prop="specName"
-                  label="商品型号"
-                  width="140"
-                >
+                <el-table-column prop="specName" label="商品型号" width="140">
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
@@ -171,11 +167,7 @@
                     ></el-input>
                   </template>
                 </el-table-column> -->
-                <el-table-column
-                  prop="specPrice"
-                  label="零售(元)"
-                  width="100"
-                >
+                <el-table-column prop="specPrice" label="零售(元)" width="100">
                   <template slot-scope="scope">
                     <el-input
                       size="mini"
@@ -407,7 +399,7 @@ export default {
         list_pic_url: "",
         goods_brief: "",
         productDetail: "",
-        productStatus:0,
+        productStatus: 0,
         // is_index: false,
         fileList: [],
       },
@@ -537,20 +529,43 @@ export default {
     // },
     getSpecData() {
       let id = this.infoForm.id;
-      
-      http.goodsDetail({id:id}).then(res=>{
-        console.log('res',res)
-        this.specGroups = info.specGroups;
-      })
 
+      http.goodsDetail({ id: id }).then((res) => {
+        console.log("res", res);
+        if (res.code === 200) {
+          const {
+            id,
+            productDetail,
+            productName,
+            productSale,
+            productSort,
+            productStatus,
+            productTitle,
+            // is_index: false,
+            productPicture,
+          } = res.data;
+          let pictureList = productPicture.map(item=>{
+            
+          })
+          this.infoForm = {
+            productName,
+            productTitle,
+            productStatus,
+            productSort,
+            productSale
+          };
+        }
+
+        // this.specGroups = info.specGroups;
+      });
     },
     addSpecData() {
       let ele = {
         specName: "",
-          specPicture: "",
-          specPrice: "",
-          specStock: "",
-          specSale: "",
+        specPicture: "",
+        specPrice: "",
+        specStock: "",
+        specSale: "",
       };
       this.specGroups.push(ele);
     },
@@ -727,7 +742,7 @@ export default {
             productSort,
             productSale,
             productDetail,
-            productStatus 
+            productStatus,
           } = this.infoForm;
           let param = {
             productName,

@@ -8,7 +8,7 @@ let timer = null
 const that = this
 export default function generateRequest(config){
   console.log('process.env',process.env)
-  let base_url = process.env.NODE_ENV ==='prod'? process.env.VUE_APP_API_BASE_URL : '/api'
+  let base_url = process.env.NODE_ENV ==='production'? process.env.VUE_APP_API_BASE_URL : '/api'
   console.log(333333333333, base_url)
 
   const defaultConfig = {

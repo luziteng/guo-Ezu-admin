@@ -1,4 +1,4 @@
-const rootUrl = 'http://8.134.172.68:8000/';
+const rootUrl = 'https://guoezu.cn:8000/';
 // const rootUrl = 'http://127.0.0.1:8360/admin/';
 
 const api = {
@@ -21,7 +21,7 @@ const api = {
 };
 
 
-// import api from './config/api'
+// import api from './config/api'                                                       
 // Axios.defaults.baseURL = api.rootUrl;
 
 export default api
