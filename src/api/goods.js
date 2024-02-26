@@ -1,7 +1,7 @@
 import requestConfig from '@/utils/request'
 let request = requestConfig()
 export default{
-categoryList(data) {
+  categoryList(data) {
     return request({
       url: '/category/selectList',
       method: 'post',
@@ -45,6 +45,14 @@ categoryList(data) {
     return request({
       url:'/product/insert',
       method:'post',
+      data
+    })
+  },
+  // 修改商品
+  updateGoods(data){
+    return request({
+      url:'/product/update',
+      method:'put',
       data
     })
   },

@@ -20,6 +20,10 @@
           <i class="fa fa-large fa-reorder"></i>
           <span>订单列表</span>
         </el-menu-item>
+        <el-menu-item index="/dashboard/banner">
+          <i class="fa fa-large fa-reorder"></i>
+          <span>首页轮播图设置</span>
+        </el-menu-item>
         <el-submenu index="goods">
           <template slot="title">
             <i class="fa fa-shopping-bag"></i>
