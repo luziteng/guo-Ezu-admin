@@ -4,7 +4,7 @@ export default {
   // 轮播图列表
   fetchBannerList(data) {
     return request({
-      url: '/banner/selectList',
+      url: '/guoezu/banner/selectList',
       method: 'post',
       data
     });
@@ -13,7 +13,7 @@ export default {
   // 新增轮播图
   insertBanner(data) {
     return request({
-      url: '/banner/insert',
+      url: '/guoezu/banner/insert',
       method: 'post',
       data
     });
@@ -22,7 +22,7 @@ export default {
   // 修改轮播图
   updateBanner(data) {
     return request({
-      url: '/banner/update',
+      url: '/guoezu/banner/update',
       method: 'put',
       data
     });
@@ -31,7 +31,7 @@ export default {
   // 删除轮播图
   deleteBanner(params) {
     return request({
-      url: '/banner/delete',
+      url: '/guoezu/banner/delete',
       method: 'DELETE',
       params
     });
@@ -40,7 +40,7 @@ export default {
   // 查询轮播图详情
   fetchBannerInfo(data) {
     return request({
-      url: '/banner/selectInfo',
+      url: '/guoezu/banner/selectInfo',
       method: 'post',
       data
     });

@@ -3,7 +3,7 @@ let request = requestConfig()
 export default{
   categoryList(data) {
     return request({
-      url: '/category/selectList',
+      url: '/guoezu/category/selectList',
       method: 'post',
       data
     })
@@ -11,7 +11,7 @@ export default{
   // 新增分类
   createcategory(data) {
     return request({
-      url:'/category/insert',
+      url:'/guoezu/category/insert',
       method:'post',
       data
     })
@@ -19,7 +19,7 @@ export default{
   // 删除分类
   deleteCategory(params){
     return request({
-      url:'/category/delete',
+      url:'/guoezu/category/delete',
       method:'delete',
       params
     })
@@ -27,7 +27,7 @@ export default{
   // 修改分类
   changeCategory(data){
     return request({
-      url:'/category/update',
+      url:'/guoezu/category/update',
       method:'put',
       data
     })
@@ -35,7 +35,7 @@ export default{
   // 查询分类信息
   checkCategory(data){
     return request({
-      url:"/category/selectInfo",
+      url:"/guoezu/category/selectInfo",
       method:'post',
       data
     })
@@ -43,7 +43,7 @@ export default{
   // 新增商品
   addGoods(data){
     return request({
-      url:'/product/insert',
+      url:'/guoezu/product/insert',
       method:'post',
       data
     })
@@ -51,7 +51,7 @@ export default{
   // 修改商品
   updateGoods(data){
     return request({
-      url:'/product/update',
+      url:'/guoezu/product/update',
       method:'put',
       data
     })
@@ -59,7 +59,7 @@ export default{
   // 新增盲盒
   createBox(data){
     return request({
-      url:'/blindBox/insert',
+      url:'/guoezu/blindBox/insert',
       method:'post',
       data
     })
@@ -67,7 +67,7 @@ export default{
   // 查询商品列表
   goodsList(data){
     return request({
-      url:'/product/selectList',
+      url:'/guoezu/product/selectList',
       method:'post',
       data
     })
@@ -75,7 +75,7 @@ export default{
   // 删除商品
   deleteGoods(params){
     return request({
-      url:'/product/delete',
+      url:'/guoezu/product/delete',
       method:'delete',
       params
     })
@@ -83,7 +83,7 @@ export default{
   // 商品详情
   goodsDetail(data){
     return request({
-      url:'/product/selectInfo',
+      url:'/guoezu/product/selectInfo',
       method:'post',
       data
     })

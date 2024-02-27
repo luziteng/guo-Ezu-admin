@@ -3,48 +3,48 @@ let request = requestConfig()
 export default{
   login(data) {
     return request({
-      url: '/admin/login',
+      url: '/guoezu/admin/login',
       method: 'post',
       data
     })
   },
   loginout(){
     return request({
-      url: '/admin/logout',
+      url: '/guoezu/admin/logout',
       method: 'post',
     })
   },
   userList(data){
     return request({
-      url: '/admin/selectList',
+      url: '/guoezu/admin/selectList',
       method: 'post',
       data
     })
   },
   userUpdate(data){
     return request({
-      url: '/admin/update',
+      url: '/guoezu/admin/update',
       method: 'put',
       data
     })
   },
   deleteUser(data){
     return request({
-      url: '/admin/update',
+      url: '/guoezu/admin/update',
       method: 'put',
       data
     })
   },
   registerUser(data){
     return request({
-      url: '/admin/register',
+      url: '/guoezu/admin/register',
       method: 'post',
       data
     })
   },
   customerList(data){
     return request({
-      url: '/user/selectList',
+      url: '/guoezu/user/selectList',
       method: 'post',
       data
     })
@@ -52,7 +52,7 @@ export default{
   // 获取oss授权
   getOssToken(){
     return request({
-      url: '/storage/getStsToken',
+      url: '/guoezu/storage/getStsToken',
       method: 'get',
     })
   }
