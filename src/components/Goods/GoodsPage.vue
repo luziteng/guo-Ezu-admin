@@ -44,7 +44,7 @@
       <el-tabs v-model="productStatus" @tab-click="handleClick">
         <el-tab-pane label="全部商品" name='one'> </el-tab-pane>
         <el-tab-pane label="出售中" name='two'></el-tab-pane>
-        <el-tab-pane label="已售完" name='there'></el-tab-pane>
+        <!-- <el-tab-pane label="已售完" name='there'></el-tab-pane> -->
         <el-tab-pane label="已下架" name='four'></el-tab-pane>
       </el-tabs>
       <div class="filter-box">
@@ -218,7 +218,7 @@
           </el-table-column> -->
           <el-table-column label="商品状态" width="80">
             <template slot-scope="scope">
-              <div >{{ scope.row.productStatus ===0?'下架':'上架' }}</div>
+              <div >{{ scope.row.productStatus ===0?'上架':'下架' }}</div>
               <!-- <el-switch
                 v-model="scope.row.is_on_sale"
                 active-text=""
@@ -507,13 +507,13 @@ export default {
       let status = undefined
       switch (this.productStatus) {
         case 'two':
-          status = 1
-          break;
-        case 'there':
-          status = 1
-          break;
-        case 'four':
           status = 0
+          break;
+        // case 'there':
+        //   status = 1
+        //   break;
+        case 'four':
+          status = 1
           break;
         default:
           break;

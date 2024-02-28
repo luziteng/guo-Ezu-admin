@@ -254,15 +254,24 @@
             <el-switch
               active-text="上架"
               inactive-text="下架"
-              :active-value="1"
-              :inactive-value="0"
+              :active-value="0"
+              :inactive-value="1"
               v-model="infoForm.productStatus"
             ></el-switch>
           </el-form-item>
-          <el-form-item label="商品详情" prop="productDetail">
+          <el-form-item label="商品详情" prop="product_pic_list">
+            <upload-img
+              :file-list="infoForm.fileDetail"
+              :is-put-oss="true"
+              :oss-path-prefix="'goods'"
+              @input="uploadPicture"
+              :max-count="10"
+            />
+          </el-form-item>
+          <!-- <el-form-item label="商品详情" prop="product_pic_list">
             <div class="edit_container">
               <quill-editor
-                v-model="infoForm.productDetail"
+                v-model="infoForm.product_pic_list"
                 ref="myTextEditor"
                 class="editer"
                 :options="editorOption"
@@ -271,9 +280,9 @@
               >
               </quill-editor>
             </div>
-          </el-form-item>
+          </el-form-item> -->
           <!-- 图片上传组件辅助-->
-          <el-form-item class="upload_ad">
+          <!-- <el-form-item class="upload_ad">
             <el-upload
               ref="upload"
               name="file"
@@ -288,7 +297,7 @@
               :http-request="uploadDetailsImg"
             >
             </el-upload>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" @click="onSubmitInfo">{{infoForm.id ? '确定修改' : '确定保存'}}</el-button>
             <el-button @click="goBackPage">返回列表</el-button>
@@ -396,10 +405,11 @@ export default {
         productSort: null,
         list_pic_url: "",
         goods_brief: "",
-        productDetail: "",
+        product_pic_list: "",
         productStatus: 0,
         // is_index: false,
         fileList: [],
+        fileDetail:[]
       },
       infoRules: {
         productName: [
@@ -541,17 +551,43 @@ export default {
             productTitle,
             // is_index: false,
             productPicture,
+            categories,
+            specs
           } = res.data;
           let pictureList = productPicture.map(item=>{
-            
+            return {
+              status: "done",
+              uid: Math.floor(Math.random()*10000000000),
+              url: item,
+              name:'img'
+            }
           })
+
+          let deltailList = productDetail.map(item=>{
+            return {
+              status: "done",
+              uid: Math.floor(Math.random()*10000000000),
+              url: item,
+              name:'img'
+            }
+          })
+          let type = categories.map(({id})=>id)
+          console.log('type',type)
           this.infoForm = {
+            id,
             productName,
             productTitle,
             productStatus,
             productSort,
-            productSale
+            productSale,
+            fileList:pictureList,
+            fileDetail:deltailList,
+            list_pic_url:productPicture,
+            product_pic_list:productDetail,
+            categoryIds:type,
+
           };
+          this.specGroups = specs
         }
 
         // this.specGroups = info.specGroups;
@@ -739,14 +775,14 @@ export default {
             productTitle,
             productSort,
             productSale,
-            productDetail,
+            product_pic_list,
             productStatus,
           } = this.infoForm;
           let param = {
             productName,
             productTitle,
             productPicture: list_pic_url,
-            productDetail,
+            productDetail:product_pic_list,
             productStatus,
             productSort,
             productSale,
@@ -917,7 +953,7 @@ export default {
         },
       }),
         // console.error(that.infoForm.goods_desc);
-        $("#summernote").summernote("code", that.infoForm.productDetail);
+        $("#summernote").summernote("code", that.infoForm.product_pic_list);
     },
     /**
      * @description:图片/文件上传线上成功返回
@@ -931,6 +967,13 @@ export default {
       this.infoForm.fileList = [...data];
       this.infoForm.list_pic_url = data.map(({ url }) => url);
       console.log("imageData-----", data, this.infoForm.list_pic_url);
+    },
+    uploadPicture(data) {
+      console.log("this", data, this.infoForm);
+      // this.$set(this.infoform, 'fileList', data)
+      this.infoForm.fileDetail = [...data];
+      this.infoForm.product_pic_list = data.map(({ url }) => url);
+      console.log("imageData-----", data, this.infoForm.product_pic_list);
     },
   },
   components: {

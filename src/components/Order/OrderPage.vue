@@ -1353,7 +1353,7 @@ import ElButton from "../../../node_modules/element-ui/packages/button/src/butto
 // Vue.component(VueBarcode.name, VueBarcode);
 
 // import { Button } from 'element-ui';
-import _http from '@/api/order'
+import _http from "@/api/order";
 
 export default {
   data() {
@@ -1655,36 +1655,21 @@ export default {
       this.getList();
     },
     getList() {
+      let params = {
+        orderType:1,
+        orderStatus:1,
+        pageSize:10,
+        pageNo:1
 
-      // _http.getOrder().then(res=>{
-      //   console.log('fasdfa',res)
-      // })
-      this.axios.get('/api/order')
-.then((res)=>{
-  console.log(res.data.data.data)
-          const {data} = res.data
-          this.tableData = res.data.data.data;
-          console.log('dfas',this.tableData);
-          this.page = res.data.data.currentPage;
-          this.total = res.data.data.count;
-        
-})
-      // this.axios
-      //   .get("order", {
-      //     params: {
-      //       page: this.page,
-      //       orderSn: this.filterForm.order_sn,
-      //       consignee: this.filterForm.consignee,
-      //       logistic_code: this.filterForm.logistic_code,
-      //       status: this.order_status,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     this.tableData = response.data.data.data;
-      //     console.log(this.tableData);
-      //     this.page = response.data.data.currentPage;
-      //     this.total = response.data.data.count;
-      //   });
+      }
+      _http.orderLists(params).then((res) => {
+        console.log('ORDERORDER',res);
+        const { list,pageNo,totalPage,totalRecords } = res.data;
+        this.tableData = list;
+        console.log("dfas", this.tableData);
+        this.page = pageNo;
+        this.total = totalRecords;
+      });
     },
     orderEdit(item) {
       this.rePrintStatus = 0;
@@ -2031,10 +2016,10 @@ export default {
   // },
   mounted() {
     this.getList();
-    this.getAutoStatus();
-    this.getDeliveyInfo();
+    // this.getAutoStatus();
+    // this.getDeliveyInfo();
     // this.getSenderInfo();
-    this.getAllRegion();
+    // this.getAllRegion();
   },
 };
 </script>
