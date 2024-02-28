@@ -145,6 +145,7 @@ export default {
       this.$refs["infoForm"].validate((valid) => {
         if (valid) {
           const { name, img_url, sort_order } = this.infoForm;
+          let id = this.$route.query.id
           let params = {
             parentId: 0,
             categoryType: 1,
@@ -153,7 +154,13 @@ export default {
             categoryStatus: 0,
             categorySort: sort_order,
           };
-          http.createcategory(params).then((res) => {
+          if(id) params.id=id;
+          console.log('params',params)
+          
+          let arr = ['changeCategory','createcategory']
+          let cout = id?'changeCategory':'createcategory'
+
+          http[cout](params).then((res) => {
             if (res.code === 200) {
               this.$message({
                 type: "success",
